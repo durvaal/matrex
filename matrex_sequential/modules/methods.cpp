@@ -25,6 +25,8 @@ void split(const string &line, Out result) {
 
   while (getline(iss, element, delimiter)) {
     *result++ = stoi(element);
+
+    // comentario
   }
 }
 
