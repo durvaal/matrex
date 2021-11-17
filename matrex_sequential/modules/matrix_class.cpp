@@ -9,7 +9,7 @@ void Matrix::setCol(int col) {
 void Matrix::setRow(int row) {
   this->row = row;
 }
-void Matrix::setElements(vector<int> elements) {
+void Matrix::setElements(vector<vector<int>> elements){
   this->elements = elements;
 }
 
@@ -19,10 +19,10 @@ int Matrix::getCol() {
 int Matrix::getRow() {
   return this->row;
 }
-vector <int> Matrix::getElements() {
+vector<vector<int>> Matrix::getElements(){
   return this->elements;
 }
 
-void Matrix::addElement(int element) {
+void Matrix::addElement(vector<int> element){
   return this->elements.push_back(element);
 }

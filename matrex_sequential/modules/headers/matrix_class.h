@@ -9,7 +9,7 @@ class Matrix {
   private:
     int col;
     int row;
-    vector<int> elements;
+    vector<vector<int>> elements;
 
   public:
     Matrix();
@@ -17,12 +17,12 @@ class Matrix {
 
     void setCol(int col);
     void setRow(int row);
-    void setElements(vector<int> elements);
+    void setElements(vector<vector<int>> elements);
 
     int getCol();
     int getRow();
-    vector<int> getElements();
-    void addElement(int element);
+    vector<vector<int>> getElements();
+    void addElement(vector<int> element);
 };
 
 #endif

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
+#include <random>
 #include "./headers/matrix_class.h"
 #include "./headers/methods.h"
 
@@ -60,11 +62,11 @@ Matrix *loadMatrix(string file) {
         if (line != "") { // on line 2 of the file is the elements of the matrix
           cout << "Matrix elements '" << line << "' \n";
 
-          vector<int> elements;
-          split(line, back_inserter(elements));
+          vector<int> element;
+          split(line, back_inserter(element));
 
-          if ((int)(elements.size()) == (matrix->getCol() * matrix->getRow())) {
-            matrix->setElements(elements);
+          if ((int)(element.size()) == matrix->getCol()) {
+            matrix->addElement(element);
           } else {
             throwException("Runtime error: The file '" + file + "' has incorrect elements definition");
           }
@@ -85,18 +87,105 @@ Matrix *loadMatrix(string file) {
 }
 
 // TODO
-void calculateMatrix(Matrix *matrix1, Matrix *matrix2) {
-  
+void calculateMatrix() {
+  Matrix *matrix1 = new Matrix();
+  matrix1->setCol(2);
+  matrix1->setRow(2);
+  vector<int> vector1 = {1, 2};
+  matrix1->addElement(vector1);
+  vector<int> vector2 = {3, 4};
+  matrix1->addElement(vector1);
+
+  Matrix *matrix2 = new Matrix();
+  matrix2->setCol(2);
+  matrix2->setRow(2);
+  vector<int> vector3 = {5, 6};
+  matrix2->addElement(vector3);
+  vector<int> vector4 = {7, 8};
+  matrix2->addElement(vector4);
+
+  for (int row = 0; row < matrix1->getRow(); row++) {
+    for (int col = 0; col < matrix2->getCol(); col++) {
+      // Multiply the row of A by the column of B to get the row, column of product.
+      for (int inner = 0; inner < 2; inner++) {
+        // product[row][col] += matrix1[row][inner] * matrix2[inner][col];
+      }
+      // std::cout << product[row][col] << "  ";
+    }
+    std::cout << "\n";
+  }
 }
 
 void loadSystem() {
   Matrix *matrix1 = loadMatrix("m1.txt");
   Matrix *matrix2 = loadMatrix("m2.txt");
 
-  calculateMatrix(matrix1, matrix2);
+  // calculateMatrix();
 
   delete matrix1;
   delete matrix2;
+}
+
+void writerMatrix(){
+  ofstream pArqMatriz1, pArqMatriz2;
+
+  int n1, m1, n2, m2;
+
+  cin >> n1 >> m1 >> n2 >> m2;
+
+  pArqMatriz1.open("m1.txt");
+  if (! pArqMatriz1) {
+      cout << "Erro ao abrir M1";
+      abort();
+  }
+
+  pArqMatriz2.open("m2.txt");
+  if (! pArqMatriz2) {
+      cout << "Erro ao abrir M2";
+      abort();
+  }
+
+  int M1[n1][m1], M2[n2][m2];
+
+  mt19937 mt(42);
+  uniform_real_distribution<float> linear_r(0.f, 100.f);
+
+  for (int i = 0; i < n1; i++){
+      for (int j = 0; j < m1; j++) {
+          M1[i][j] = linear_r( mt );
+      }
+  }
+
+  for (int i = 0; i < n2; i++){
+      for (int j = 0; j < m2; j++) {
+          M2[i][j] = linear_r( mt );
+      }
+  }
+
+  string aux;
+
+  pArqMatriz1 << n1 << " " << m1 << endl;
+  pArqMatriz2 << n2 << " " << m2 << endl;
+  
+
+  for (int i = 0; i < n1; i++){
+      for (int j = 0; j < m1; j++) {
+          pArqMatriz1 << M1[i][j] << " ";
+      }
+      pArqMatriz1 << "" << endl;
+  }
+
+  for (int i = 0; i < n2; i++){
+      for (int j = 0; j < m2; j++) {
+          pArqMatriz2 << M2[i][j] << " "; 
+      }
+      pArqMatriz2 << "" << endl;
+  }
+
+  pArqMatriz1.close();
+  pArqMatriz2.close();
+
+  loadSystem();
 }
 
 void listAvailableCommands() {
@@ -125,7 +214,7 @@ void initializeProgram() {
         exit(0);
       } else if (strcmp(arguments, "init") == 0) {
         cout << "\n";
-        loadSystem();
+        writerMatrix();
       } else if (strcmp(arguments, "help") == 0) {
         listAvailableCommands();
       } else {
