@@ -6,10 +6,12 @@
 #include <vector>
 #include <cstdlib>
 #include <random>
+#include <chrono>
 #include "./headers/matrix_class.h"
 #include "./headers/methods.h"
 
 using namespace std;
+using namespace std::chrono;
 
 void throwException(string message) {
   ostringstream oss;
@@ -86,41 +88,85 @@ Matrix *loadMatrix(string file) {
   return matrix;
 }
 
-// TODO
-void calculateMatrix() {
-  Matrix *matrix1 = new Matrix();
-  matrix1->setCol(2);
-  matrix1->setRow(2);
-  vector<int> vector1 = {1, 2};
-  matrix1->addElement(vector1);
-  vector<int> vector2 = {3, 4};
-  matrix1->addElement(vector1);
+void writerFileWithMatricesMultiplication(Matrix *matricesProduct, int calculationTimeInNanoSeconds)
+{
+  cout << "Init writerFileWithMatricesMultiplication \n";
 
-  Matrix *matrix2 = new Matrix();
-  matrix2->setCol(2);
-  matrix2->setRow(2);
-  vector<int> vector3 = {5, 6};
-  matrix2->addElement(vector3);
-  vector<int> vector4 = {7, 8};
-  matrix2->addElement(vector4);
+  ofstream matricesProductFile;
 
-  for (int row = 0; row < matrix1->getRow(); row++) {
-    for (int col = 0; col < matrix2->getCol(); col++) {
-      // Multiply the row of A by the column of B to get the row, column of product.
-      for (int inner = 0; inner < 2; inner++) {
-        // product[row][col] += matrix1[row][inner] * matrix2[inner][col];
-      }
-      // std::cout << product[row][col] << "  ";
+  matricesProductFile.open("matricesProduct.txt");
+  matricesProductFile << matricesProduct->getCol() << " " << matricesProduct->getRow() << "\n";
+
+  for (int row = 0; row < matricesProduct->getRow(); row++) {
+    for (int col = 0; col < matricesProduct->getCol(); col++) {
+      matricesProductFile << "c" << row + 1 << col + 1 << " " << matricesProduct->getElementValue(row, col) << "\n";
     }
-    std::cout << "\n";
   }
+
+  matricesProductFile << calculationTimeInNanoSeconds << "\n";
+
+  matricesProductFile.close();
+
+  cout << "End writerFileWithMatricesMultiplication \n";
+};
+
+void calculateMatricesMultiplication(Matrix *matrix1, Matrix *matrix2) {
+  cout << "Init calculateMatricesMultiplication \n";
+
+  if (matrix1->getCol() == matrix2->getRow()) {
+    Matrix *matricesProduct = new Matrix();
+
+    matricesProduct->setRow(matrix1->getRow());
+    matricesProduct->setCol(matrix1->getCol());
+
+    for (int row = 0; row < matrix1->getRow(); row++) {
+      vector<int> emptyVector;
+
+      for (int col = 0; col < matrix2->getCol(); col++) {
+        emptyVector.push_back(0);
+      }
+
+      matricesProduct->addElement(emptyVector);
+    }
+
+    cout << "Total Matrices Multiplication \n";
+    
+    steady_clock::time_point beginTime = steady_clock::now();
+
+    for (int row = 0; row < matrix1->getRow(); row++) {
+      for (int col = 0; col < matrix2->getCol(); col++) {
+        for (int inner = 0; inner < matrix2->getRow(); inner++) {
+          int newElementValue = matricesProduct->getElementValue(row, col) + (matrix1->getElementValue(row, inner) * matrix2->getElementValue(inner, col));
+          matricesProduct->setElementValue(row, col, newElementValue);
+        }
+        cout << matricesProduct->getElementValue(row, col) << "  ";
+      }
+      cout << "\n";
+    }
+
+    steady_clock::time_point endTime = steady_clock::now();
+
+    cout << "\n";
+
+    writerFileWithMatricesMultiplication(matricesProduct, duration_cast<nanoseconds>(endTime - beginTime).count());
+
+    cout << "\n";
+
+    delete matricesProduct;
+  } else {
+    throwException("Runtime error: It's not possible to multiply the matrices, the matrix1 has " + to_string(matrix1->getCol()) + " columns and the matrix2 has " + to_string(matrix2->getRow()) + " rows");
+  }
+
+  cout << "End calculateMatricesMultiplication \n";
 }
+
+
 
 void loadSystem() {
   Matrix *matrix1 = loadMatrix("m1.txt");
   Matrix *matrix2 = loadMatrix("m2.txt");
 
-  // calculateMatrix();
+  calculateMatricesMultiplication(matrix1, matrix2);
 
   delete matrix1;
   delete matrix2;
@@ -191,7 +237,8 @@ void writerMatrix(){
 void listAvailableCommands() {
   cout << "\n:::: Available Commands ::::\n\n";
   cout << "quit                                           Exit the system\n";
-  cout << "init                                           Start reading and calculating matrices \n";
+  cout << "wm                                             Start write m1 and m2 matrices \n";
+  cout << "rsm                                            Start reading and calculating sequentially matrices \n";
   cout << "\n";
 }
 
@@ -212,9 +259,12 @@ void initializeProgram() {
       if (strcmp(arguments, "quit") == 0) {
         cout << "\nBye bye... \n";
         exit(0);
-      } else if (strcmp(arguments, "init") == 0) {
+      } else if (strcmp(arguments, "wm") == 0) {
         cout << "\n";
         writerMatrix();
+      } else if (strcmp(arguments, "rsm") == 0) {
+        cout << "\n";
+        loadSystem();
       } else if (strcmp(arguments, "help") == 0) {
         listAvailableCommands();
       } else {

@@ -18,11 +18,13 @@ class Matrix {
     void setCol(int col);
     void setRow(int row);
     void setElements(vector<vector<int>> elements);
+    void setElementValue(int row, int col, int elementValue);
 
     int getCol();
     int getRow();
     vector<vector<int>> getElements();
     void addElement(vector<int> element);
+    int getElementValue(int row, int col);
 };
 
 #endif
