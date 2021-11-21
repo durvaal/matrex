@@ -162,8 +162,6 @@ void calculateMatricesMultiplication(Matrix *matrix1, Matrix *matrix2) {
   cout << "End calculateMatricesMultiplication \n";
 }
 
-
-
 void loadSystem() {
   Matrix *matrix1 = loadMatrix("m1.txt");
   Matrix *matrix2 = loadMatrix("m2.txt");

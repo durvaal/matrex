@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "cstdlib": "cpp",
+        "random": "cpp"
+    }
+}
