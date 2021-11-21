@@ -96,7 +96,6 @@ void *calculateResultMatrix(void *thrgs) {
   file << TimeTotalInNanoSeconds << endl;
 
   pthread_exit(NULL);
-
 }
 
 int main (int argc, char const *argv[]) {
@@ -105,7 +104,7 @@ int main (int argc, char const *argv[]) {
   fstream matrixFile;
 
   //descobrir o número de arquivos que deverão ser abertos
-  size_t arq_number = ceil(n1*n2/p);
+  size_t arq_number = ceil(n1*m2/p);
 
   pthread_t threads[arq_number];
   arguments_t calc_thread[arq_number];
