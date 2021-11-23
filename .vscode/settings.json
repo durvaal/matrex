@@ -45,6 +45,10 @@
         "bit": "cpp",
         "iterator": "cpp",
         "memory_resource": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "chrono": "cpp",
+        "filesystem": "cpp",
+        "codecvt": "cpp",
+        "ratio": "cpp"
     }
 }
